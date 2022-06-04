@@ -1,11 +1,13 @@
 package br.ufpr.aquitemsus.service;
 
+import br.ufpr.aquitemsus.model.Establishment;
 import br.ufpr.aquitemsus.model.Localization;
 import br.ufpr.aquitemsus.model.interfaces.EstablishmentSimplified;
 import br.ufpr.aquitemsus.repository.EstablishmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EstablishmentService {
@@ -22,5 +24,9 @@ public class EstablishmentService {
                 localization.getLongitude(),
                 distance
         );
+    }
+
+    public Optional<Establishment> findEstablishmentById(Long id) {
+        return _establishmentRepository.findById(id);
     }
 }
