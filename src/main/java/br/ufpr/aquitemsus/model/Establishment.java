@@ -31,8 +31,8 @@ public class Establishment {
     @Column
     private String email;
 
-    @ElementCollection
-    private List<String> phones;
+    @Column
+    private String phone;
 
     @ManyToMany
     private List<Specialty> specialties;
@@ -104,12 +104,12 @@ public class Establishment {
         this.email = email;
     }
 
-    public List<String> getPhones() {
-        return phones;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhones(List<String> phones) {
-        this.phones = phones;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public List<Specialty> getSpecialties() {
