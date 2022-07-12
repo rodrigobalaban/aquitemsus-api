@@ -1,4 +1,4 @@
-package br.ufpr.aquitemsus.config;
+package br.ufpr.aquitemsus.config.jwt;
 
 import br.ufpr.aquitemsus.service.AuthService;
 import org.springframework.security.core.Authentication;
