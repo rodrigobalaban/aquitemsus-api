@@ -20,4 +20,11 @@ public class UserController {
     public User createUser(@RequestBody User user) {
         return _userService.createUser(user);
     }
+
+    @PostMapping
+    @RequestMapping("/reset-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void resetPassword(@RequestBody String email) {
+        _userService.resetPassword(email);
+    }
 }
