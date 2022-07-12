@@ -1,7 +1,11 @@
 package br.ufpr.aquitemsus.service;
 
+import br.ufpr.aquitemsus.exception.NotFoundException;
 import br.ufpr.aquitemsus.model.User;
 import br.ufpr.aquitemsus.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -19,12 +23,36 @@ public class UserService {
         _mailSender = mailSender;
     }
 
+    public Page<User> findAllUsersByName(String name, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return this._userRepository.findAllByNameContainingIgnoreCase(name, pageable);
+    }
+
+    public User findUserById(Long id) {
+        return this._userRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
     public User findUserByEmail(String email) {
         return _userRepository.findUserByEmail(email);
     }
 
-    public User createUser(User user) {
+    public User saveUser(User user) {
         return _userRepository.save(user);
+    }
+
+    public User updateUser(Long idUser, User updatedUser) {
+        User user = findUserById(idUser);
+
+        user.setName(updatedUser.getName());
+        user.setPassword(updatedUser.getPassword());
+
+        return _userRepository.save(user);
+    }
+
+    public void delete(Long idUser) {
+        User product = findUserById(idUser);
+
+        _userRepository.deleteById(product.getId());
     }
 
     public void resetPassword(String email) {
