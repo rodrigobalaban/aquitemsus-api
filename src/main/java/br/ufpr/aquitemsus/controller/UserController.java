@@ -20,11 +20,11 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAllUsers(@RequestParam String name,
-                              @RequestParam int page,
-                              @RequestParam int pagesize,
-                              HttpServletResponse response) {
-        Page<User> pageUser = this._userService.findAllUsersByName(name, page, pagesize);
+    public List<User> findAllUsers(@RequestParam String search,
+                                   @RequestParam int page,
+                                   @RequestParam int pagesize,
+                                   HttpServletResponse response) {
+        Page<User> pageUser = this._userService.findAllUsersByName(search, page, pagesize);
         response.setHeader("X-Total-Count", String.valueOf(pageUser.getTotalElements()));
         return pageUser.toList();
     }
