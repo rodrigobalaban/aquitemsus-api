@@ -2,6 +2,7 @@ package br.ufpr.aquitemsus.controller;
 
 import br.ufpr.aquitemsus.model.Establishment;
 import br.ufpr.aquitemsus.model.Localization;
+import br.ufpr.aquitemsus.model.interfaces.EstablishmentGridList;
 import br.ufpr.aquitemsus.model.interfaces.EstablishmentSimplified;
 import br.ufpr.aquitemsus.service.EstablishmentService;
 import org.springframework.data.domain.Page;
@@ -22,11 +23,11 @@ public class EstablishmentController {
     }
 
     @GetMapping
-    public List<EstablishmentSimplified> findAllEstablishments(@RequestParam String search,
+    public List<EstablishmentGridList> findAllEstablishments(@RequestParam String search,
                                                                @RequestParam int page,
                                                                @RequestParam int pagesize,
                                                                HttpServletResponse response) {
-        Page<EstablishmentSimplified> pageEstablishments = this._establishmentService.findAllEstablishmentsByName(
+        Page<EstablishmentGridList> pageEstablishments = this._establishmentService.findAllEstablishmentsByName(
                 search,
                 page,
                 pagesize

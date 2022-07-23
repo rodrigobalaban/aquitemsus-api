@@ -1,6 +1,7 @@
 package br.ufpr.aquitemsus.repository;
 
 import br.ufpr.aquitemsus.model.Establishment;
+import br.ufpr.aquitemsus.model.interfaces.EstablishmentGridList;
 import br.ufpr.aquitemsus.model.interfaces.EstablishmentSimplified;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,5 +23,5 @@ public interface EstablishmentRepository extends JpaRepository<Establishment, Lo
             @Param("distance") final double distance
     );
 
-    Page<EstablishmentSimplified> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<EstablishmentGridList> findAllByNameContainingIgnoreCaseOrderByNameAsc(String name, Pageable pageable);
 }

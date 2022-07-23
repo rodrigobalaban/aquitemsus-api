@@ -3,6 +3,7 @@ package br.ufpr.aquitemsus.service;
 import br.ufpr.aquitemsus.exception.NotFoundException;
 import br.ufpr.aquitemsus.model.Establishment;
 import br.ufpr.aquitemsus.model.Localization;
+import br.ufpr.aquitemsus.model.interfaces.EstablishmentGridList;
 import br.ufpr.aquitemsus.model.interfaces.EstablishmentSimplified;
 import br.ufpr.aquitemsus.repository.EstablishmentRepository;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,9 @@ public class EstablishmentService {
         _establishmentRepository = establishmentRepository;
     }
 
-    public Page<EstablishmentSimplified> findAllEstablishmentsByName(String name, int page, int pageSize) {
+    public Page<EstablishmentGridList> findAllEstablishmentsByName(String name, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return this._establishmentRepository.findAllByNameContainingIgnoreCase(name, pageable);
+        return this._establishmentRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(name, pageable);
     }
 
     public List<EstablishmentSimplified> findEstablishmentsByLocalization(Localization localization, double distance) {
