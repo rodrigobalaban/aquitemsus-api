@@ -2,6 +2,8 @@ package br.ufpr.aquitemsus.service;
 
 import br.ufpr.aquitemsus.exception.NotFoundException;
 import br.ufpr.aquitemsus.model.User;
+import br.ufpr.aquitemsus.model.UserAdmin;
+import br.ufpr.aquitemsus.repository.UserAdminRepository;
 import br.ufpr.aquitemsus.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,44 +18,49 @@ import javax.mail.internet.MimeMessage;
 public class UserService {
 
     private final UserRepository _userRepository;
+    private final UserAdminRepository _userAdminRepository;
     private final JavaMailSender _mailSender;
 
-    public UserService(UserRepository userRepository, JavaMailSender mailSender) {
+    public UserService(UserRepository userRepository,
+                       UserAdminRepository userAdminRepository,
+                       JavaMailSender mailSender) {
         _userRepository = userRepository;
+        _userAdminRepository = userAdminRepository;
         _mailSender = mailSender;
     }
 
-    public Page<User> findAllUsersByName(String name, int page, int pageSize) {
+    public Page<UserAdmin> findAllUsersByName(String name, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return this._userRepository.findAllByNameContainingIgnoreCase(name, pageable);
+        return this._userAdminRepository.findAllByNameContainingIgnoreCase(name, pageable);
     }
 
-    public User findUserById(Long id) {
-        return this._userRepository.findById(id).orElseThrow(NotFoundException::new);
+    public UserAdmin findUserById(Long id) {
+        return this._userAdminRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public User findUserByEmail(String email) {
         return _userRepository.findUserByEmail(email);
     }
 
-    public User saveUser(User user) {
-        return _userRepository.save(user);
+    public UserAdmin saveUser(UserAdmin user) {
+        return _userAdminRepository.save(user);
     }
 
-    public User updateUser(Long idUser, User updatedUser) {
-        User user = findUserById(idUser);
+    public UserAdmin updateUser(Long idUser, UserAdmin updatedUser) {
+        UserAdmin user = findUserById(idUser);
 
         user.setName(updatedUser.getName());
         user.setPassword(updatedUser.getPassword());
         user.setRole(updatedUser.getRole());
+        user.setAllowedEstablishments(updatedUser.getAllowedEstablishments());
 
-        return _userRepository.save(user);
+        return saveUser(user);
     }
 
     public void delete(Long idUser) {
-        User product = findUserById(idUser);
+        User user = findUserById(idUser);
 
-        _userRepository.deleteById(product.getId());
+        _userAdminRepository.deleteById(user.getId());
     }
 
     public void resetPassword(String email) {
