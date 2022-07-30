@@ -7,6 +7,7 @@ import java.util.List;
 public class Establishment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
@@ -20,6 +21,7 @@ public class Establishment {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "establishment_id")
+    @OrderBy("dayOfWeek ASC")
     private List<EstablishmentOpeningHours> openingHours;
 
     @Embedded
@@ -39,6 +41,9 @@ public class Establishment {
 
     @ManyToMany
     private List<Professional> professionals;
+
+    @Column
+    private boolean scheduling;
 
     public Long getId() {
         return id;
@@ -126,5 +131,13 @@ public class Establishment {
 
     public void setProfessionals(List<Professional> professionals) {
         this.professionals = professionals;
+    }
+
+    public boolean isScheduling() {
+        return scheduling;
+    }
+
+    public void setScheduling(boolean scheduling) {
+        this.scheduling = scheduling;
     }
 }

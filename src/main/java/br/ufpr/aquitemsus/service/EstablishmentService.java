@@ -56,6 +56,7 @@ public class EstablishmentService {
         establishment.setPhone(updatedEstablishment.getPhone());
         establishment.setProfessionals(updatedEstablishment.getProfessionals());
         establishment.setSpecialties(updatedEstablishment.getSpecialties());
+        establishment.setScheduling(updatedEstablishment.isScheduling());
 
         return _establishmentRepository.save(establishment);
     }
