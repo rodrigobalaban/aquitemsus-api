@@ -1,5 +1,6 @@
 package br.ufpr.aquitemsus.model;
 
+import br.ufpr.aquitemsus.model.enums.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -19,6 +20,9 @@ public class User {
 
     @Column
     private String password;
+
+    @Column
+    private UserRole role;
 
     public Long getId() {
         return id;
@@ -50,5 +54,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }
