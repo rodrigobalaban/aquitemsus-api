@@ -24,4 +24,8 @@ public interface EstablishmentRepository extends JpaRepository<Establishment, Lo
     );
 
     Page<EstablishmentGridList> findAllByNameContainingIgnoreCaseOrderByNameAsc(String name, Pageable pageable);
+
+    @Query(value = "SELECT e.id as id, e.name as name, e.category as category, e.address as address, e.scheduling as scheduling FROM UserAdmin u INNER JOIN u.allowedEstablishments as e WHERE u.email = :email AND UPPER(e.name) LIKE CONCAT('%',UPPER(:name),'%') ORDER BY e.name ",
+      countQuery = "SELECT COUNT(e) FROM UserAdmin u INNER JOIN u.allowedEstablishments as e WHERE u.email = :email AND UPPER(e.name) LIKE CONCAT('%',UPPER(:name),'%') ORDER BY e.name ")
+    Page<EstablishmentGridList> findAllByNameAndUserEmail(String name, String email, Pageable pageable);
 }

@@ -8,7 +8,6 @@ import br.ufpr.aquitemsus.service.EstablishmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -24,9 +23,10 @@ public class EstablishmentController {
 
     @GetMapping
     public List<EstablishmentGridList> findAllEstablishments(@RequestParam String search,
-                                                               @RequestParam int page,
-                                                               @RequestParam int pagesize,
-                                                               HttpServletResponse response) {
+                                                             @RequestParam int page,
+                                                             @RequestParam int pagesize,
+                                                             HttpServletResponse response) {
+
         Page<EstablishmentGridList> pageEstablishments = this._establishmentService.findAllEstablishmentsByName(
                 search,
                 page,

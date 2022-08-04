@@ -9,6 +9,8 @@ import br.ufpr.aquitemsus.repository.EstablishmentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +25,14 @@ public class EstablishmentService {
     }
 
     public Page<EstablishmentGridList> findAllEstablishmentsByName(String name, int page, int pageSize) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Pageable pageable = PageRequest.of(page, pageSize);
+
+        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Employee"))) {
+            String email = auth.getName();
+            return this._establishmentRepository.findAllByNameAndUserEmail(name, email, pageable);
+        }
+
         return this._establishmentRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(name, pageable);
     }
 
