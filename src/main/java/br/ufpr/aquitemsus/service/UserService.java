@@ -3,6 +3,8 @@ package br.ufpr.aquitemsus.service;
 import br.ufpr.aquitemsus.exception.NotFoundException;
 import br.ufpr.aquitemsus.model.User;
 import br.ufpr.aquitemsus.model.UserAdmin;
+import br.ufpr.aquitemsus.model.UserSus;
+import br.ufpr.aquitemsus.model.enums.UserRole;
 import br.ufpr.aquitemsus.repository.UserAdminRepository;
 import br.ufpr.aquitemsus.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -61,6 +63,12 @@ public class UserService {
         User user = findUserById(idUser);
 
         _userAdminRepository.deleteById(user.getId());
+    }
+
+    public UserSus registerUserSus(UserSus userSus) {
+        userSus.setRole(UserRole.User);
+
+        return _userRepository.save(userSus);
     }
 
     public void resetPassword(String email) {

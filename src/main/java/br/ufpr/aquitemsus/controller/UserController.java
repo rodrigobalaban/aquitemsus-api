@@ -1,6 +1,7 @@
 package br.ufpr.aquitemsus.controller;
 
 import br.ufpr.aquitemsus.model.UserAdmin;
+import br.ufpr.aquitemsus.model.UserSus;
 import br.ufpr.aquitemsus.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,13 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         _userService.delete(id);
+    }
+
+    @PostMapping
+    @RequestMapping("/register-user")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserSus registerUserSus(@RequestBody UserSus userSus) {
+        return _userService.registerUserSus(userSus);
     }
 
     @PostMapping

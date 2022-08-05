@@ -1,8 +1,6 @@
 package br.ufpr.aquitemsus.model;
 
 import br.ufpr.aquitemsus.model.enums.UserRole;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 @Entity(name = "user_system")
