@@ -39,7 +39,8 @@ public class Establishment {
     @ManyToMany
     private List<Specialty> specialties;
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "establishment_id")
     private List<Professional> professionals;
 
     @Column

@@ -12,6 +12,9 @@ public class Professional {
     @Column
     private String name;
 
+    @ManyToOne
+    private Specialty specialty;
+
     public Long getId() {
         return id;
     }
@@ -26,5 +29,13 @@ public class Professional {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Specialty getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
     }
 }
