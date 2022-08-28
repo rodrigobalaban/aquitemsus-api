@@ -1,5 +1,7 @@
-package br.ufpr.aquitemsus.config.jwt;
+package br.ufpr.aquitemsus.config;
 
+import br.ufpr.aquitemsus.config.jwt.JWTAuthenticationFilter;
+import br.ufpr.aquitemsus.config.jwt.JWTLoginFilter;
 import br.ufpr.aquitemsus.service.AuthService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,11 +35,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers(HttpMethod.GET, "/establishments/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/register-user").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/reset-password").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
-                .addFilterBefore(new JWTLoginFilter("/auth", authenticationManager()),
+                .addFilterBefore(new JWTLoginFilter("/auth", authenticationManager(), _authService),
                         UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new JWTAuthenticationFilter(),
