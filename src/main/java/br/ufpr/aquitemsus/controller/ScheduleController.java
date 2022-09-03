@@ -24,7 +24,7 @@ public class ScheduleController {
         return _scheduleService.findScheduleById(id);
     }
 
-    @GetMapping("/days-of-month")
+    @GetMapping(value = "/days-of-month", params = {"month", "year", "idEstablishment"})
     public List<Integer> findDaysOfMonthWithSchedules(
         @RequestParam Integer month,
         @RequestParam Integer year,
@@ -33,7 +33,27 @@ public class ScheduleController {
         return _scheduleService.findDaysOfMonthWithSchedules(month, year, idEstablishment);
     }
 
-    @GetMapping
+    @GetMapping(value = "/days-of-month", params = {"month", "year", "idEstablishment", "idProfessional"})
+    public List<Integer> findDaysOfMonthWithSchedules(
+            @RequestParam Integer month,
+            @RequestParam Integer year,
+            @RequestParam Long idEstablishment,
+            @RequestParam Long idProfessional
+    ) {
+        return _scheduleService.findDaysOfMonthWithSchedules(month, year, idEstablishment, idProfessional);
+    }
+
+    @GetMapping("/reserved")
+    public List<Schedule> findReservedSchedules(@RequestParam Long idEstablishment) {
+        return _scheduleService.findReservedSchedules(idEstablishment);
+    }
+
+    @GetMapping("/user")
+    public List<Schedule> findUserSchedules(@RequestParam Long userId) {
+        return _scheduleService.findUserSchedules(userId);
+    }
+
+    @GetMapping(params = {"day", "month", "year", "idEstablishment"})
     public List<Schedule> findSchedulesOfDay(
             @RequestParam Integer day,
             @RequestParam Integer month,
@@ -41,6 +61,17 @@ public class ScheduleController {
             @RequestParam Long idEstablishment
     ) {
         return _scheduleService.findSchedulesOfDay(day, month, year, idEstablishment);
+    }
+
+    @GetMapping(params = {"day", "month", "year", "idEstablishment", "idProfessional"})
+    public List<Schedule> findSchedulesOfDay(
+            @RequestParam Integer day,
+            @RequestParam Integer month,
+            @RequestParam Integer year,
+            @RequestParam Long idEstablishment,
+            @RequestParam Long idProfessional
+    ) {
+        return _scheduleService.findSchedulesOfDay(day, month, year, idEstablishment, idProfessional);
     }
 
     @PostMapping

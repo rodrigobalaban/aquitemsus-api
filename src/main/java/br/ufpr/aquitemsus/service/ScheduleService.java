@@ -2,12 +2,13 @@ package br.ufpr.aquitemsus.service;
 
 import br.ufpr.aquitemsus.exception.NotFoundException;
 import br.ufpr.aquitemsus.model.Schedule;
+import br.ufpr.aquitemsus.model.enums.ScheduleStatus;
 import br.ufpr.aquitemsus.repository.ScheduleRepository;
 import br.ufpr.aquitemsus.repository.UserAdminRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,8 +28,26 @@ public class ScheduleService {
         return this._scheduleRepository.findDaysOfMonthWithSchedules(month, year, idEstablishment);
     }
 
+    public List<Integer> findDaysOfMonthWithSchedules(Integer month, Integer year, Long idEstablishment, Long idProfessional) {
+        var status = ScheduleStatus.Available;
+        return this._scheduleRepository.findDaysOfMonthWithSchedules(month, year, idEstablishment, idProfessional, status);
+    }
+
+    public List<Schedule> findReservedSchedules(Long establishmentId) {
+        var status = ScheduleStatus.Reserved;
+        return this._scheduleRepository.findAllByEstablishmentIdAndStatus(establishmentId, status);
+    }
+
+    public List<Schedule> findUserSchedules(Long userId) {
+        return this._scheduleRepository.findAllByUserSusIdOrderByDateDesc(userId);
+    }
+
     public List<Schedule> findSchedulesOfDay(Integer day, Integer month, Integer year, Long idEstablishment) {
         return this._scheduleRepository.findSchedulesOfDay(day, month, year, idEstablishment);
+    }
+
+    public List<Schedule> findSchedulesOfDay(Integer day, Integer month, Integer year, Long idEstablishment, Long idProfessional) {
+        return this._scheduleRepository.findSchedulesOfDay(day, month, year, idEstablishment, idProfessional);
     }
 
     public Schedule saveSchedule(Schedule schedule) {
@@ -37,12 +56,18 @@ public class ScheduleService {
 
     public Schedule updateSchedule(Long id, Schedule updatedSchedule) {
         var schedule = this.findScheduleById(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        schedule.setDate(updatedSchedule.getDate());
-        schedule.setEstablishment(updatedSchedule.getEstablishment());
-        schedule.setProfessional(updatedSchedule.getProfessional());
+        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Employee"))) {
+            schedule.setDate(updatedSchedule.getDate());
+            schedule.setEstablishment(updatedSchedule.getEstablishment());
+            schedule.setProfessional(updatedSchedule.getProfessional());
+            schedule.setStatus(updatedSchedule.getStatus());
+        } else {
+            schedule.setStatus(ScheduleStatus.Reserved);
+        }
+
         schedule.setUserSus(updatedSchedule.getUserSus());
-        schedule.setStatus(updatedSchedule.getStatus());
 
         return this.saveSchedule(schedule);
     }
