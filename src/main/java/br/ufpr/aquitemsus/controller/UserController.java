@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserAdmin updateUser( @PathVariable Long id, @RequestBody UserAdmin updatedProduct) {
+    public UserAdmin updateUser(@PathVariable Long id, @RequestBody UserAdmin updatedProduct) {
         return _userService.updateUser(id, updatedProduct);
     }
 
@@ -51,16 +51,23 @@ public class UserController {
         _userService.delete(id);
     }
 
-    @PostMapping
-    @RequestMapping("/register-user")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserSus registerUserSus(@RequestBody UserSus userSus) {
-        return _userService.registerUserSus(userSus);
+    @GetMapping("/sus/{id}")
+    public UserSus findUserSusById(@PathVariable Long id) {
+        return _userService.findUserSusById(id);
     }
 
-    @PostMapping
-    @RequestMapping("/reset-password")
-    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/sus")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserSus saveUserSus(@RequestBody UserSus userSus) {
+        return _userService.saveUserSus(userSus);
+    }
+
+    @PutMapping("/sus/{id}")
+    public UserSus updateUserSus(@PathVariable Long id, @RequestBody UserSus userSus) {
+        return _userService.updateUserSus(id, userSus);
+    }
+
+    @PostMapping("/reset-password")
     public void resetPassword(@RequestBody String email) {
         _userService.resetPassword(email);
     }

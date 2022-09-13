@@ -7,6 +7,7 @@ import br.ufpr.aquitemsus.model.UserSus;
 import br.ufpr.aquitemsus.model.enums.UserRole;
 import br.ufpr.aquitemsus.repository.UserAdminRepository;
 import br.ufpr.aquitemsus.repository.UserRepository;
+import br.ufpr.aquitemsus.repository.UserSusRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,16 +22,20 @@ public class UserService {
 
     private final UserRepository _userRepository;
     private final UserAdminRepository _userAdminRepository;
+    private final UserSusRepository _userSusRepository;
     private final JavaMailSender _mailSender;
 
     public UserService(UserRepository userRepository,
                        UserAdminRepository userAdminRepository,
+                       UserSusRepository userSusRepository,
                        JavaMailSender mailSender) {
         _userRepository = userRepository;
         _userAdminRepository = userAdminRepository;
+        _userSusRepository = userSusRepository;
         _mailSender = mailSender;
     }
 
+    //region UserAdmin
     public Page<UserAdmin> findAllUsersByName(String name, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         return this._userAdminRepository.findAllByNameContainingIgnoreCase(name, pageable);
@@ -38,10 +43,6 @@ public class UserService {
 
     public UserAdmin findUserById(Long id) {
         return this._userAdminRepository.findById(id).orElseThrow(NotFoundException::new);
-    }
-
-    public User findUserByEmail(String email) {
-        return _userRepository.findUserByEmail(email);
     }
 
     public UserAdmin saveUser(UserAdmin user) {
@@ -64,15 +65,35 @@ public class UserService {
 
         _userAdminRepository.deleteById(user.getId());
     }
+    //endregion
 
-    public UserSus registerUserSus(UserSus userSus) {
+    //region UserSus
+    public UserSus findUserSusById(Long id) {
+        return _userSusRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    public UserSus saveUserSus(UserSus userSus) {
         userSus.setRole(UserRole.User);
 
-        return _userRepository.save(userSus);
+        return _userSusRepository.save(userSus);
+    }
+
+    public UserSus updateUserSus(Long id, UserSus updatedUserSus) {
+        var userSus = findUserSusById(id);
+
+        userSus.setName(updatedUserSus.getName());
+        userSus.setEmail(updatedUserSus.getEmail());
+
+        return saveUserSus(userSus);
+    }
+    //endregion
+
+    public User findUserByEmail(String email) {
+        return _userRepository.findUserByEmail(email);
     }
 
     public void resetPassword(String email) {
-        User user = _userRepository.findUserByEmail(email);
+        User user = findUserByEmail(email);
 
         if (user == null) {
             return;
