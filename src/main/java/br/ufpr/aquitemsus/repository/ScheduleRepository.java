@@ -19,7 +19,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findAllByEstablishmentIdAndStatus(Long establishmentId, ScheduleStatus status);
 
-    List<Schedule> findAllByUserSusIdOrderByDateDesc(Long UserSusId);
+    List<Schedule> findAllByUserSusIdOrderByDateDesc(Long userSusId);
+
+    Long countAllByUserSusIdAndStatusOrStatus(Long userSusId, ScheduleStatus statusConfirmed, ScheduleStatus statusReserved);
 
     @Query("SELECT s FROM Schedule s WHERE day(s.date) = :day AND month(s.date) = :month AND year(s.date) = :year AND s.establishment.id = :idEstablishment")
     List<Schedule> findSchedulesOfDay(Integer day, Integer month, Integer year, Long idEstablishment);

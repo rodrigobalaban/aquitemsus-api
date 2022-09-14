@@ -3,6 +3,7 @@ package br.ufpr.aquitemsus.controller;
 import br.ufpr.aquitemsus.model.Establishment;
 import br.ufpr.aquitemsus.model.Localization;
 import br.ufpr.aquitemsus.model.interfaces.EstablishmentGridList;
+import br.ufpr.aquitemsus.model.interfaces.EstablishmentSearchMapList;
 import br.ufpr.aquitemsus.model.interfaces.EstablishmentSimplified;
 import br.ufpr.aquitemsus.service.EstablishmentService;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ public class EstablishmentController {
         _establishmentService = establishmentService;
     }
 
-    @GetMapping
+    @GetMapping(params = {"search", "page", "pagesize"})
     public List<EstablishmentGridList> findAllEstablishments(@RequestParam String search,
                                                              @RequestParam int page,
                                                              @RequestParam int pagesize,
@@ -37,14 +38,34 @@ public class EstablishmentController {
         return pageEstablishments.toList();
     }
 
+    @GetMapping(params = {"search", "latitude", "longitude", "page", "pagesize"})
+    public List<EstablishmentSearchMapList> findAllEstablishments(@RequestParam String search,
+                                                             @RequestParam double latitude,
+                                                             @RequestParam double longitude,
+                                                             @RequestParam int page,
+                                                             @RequestParam int pagesize,
+                                                             HttpServletResponse response) {
+        var localization = new Localization(latitude, longitude);
+        Page<EstablishmentSearchMapList> pageEstablishments = this._establishmentService.findAllEstablishmentsByNameAndLocalization(
+                search,
+                localization,
+                page,
+                pagesize
+        );
+
+        response.setHeader("X-Total-Count", String.valueOf(pageEstablishments.getTotalElements()));
+        return pageEstablishments.toList();
+    }
+
     @GetMapping("/localization")
     public List<EstablishmentSimplified> findEstablishmentsByLocalization(
             @RequestParam("latitude") double latitude,
             @RequestParam("longitude") double longitude,
-            @RequestParam("distance") double distance
+            @RequestParam("distance") double distance,
+            @RequestParam("specialties") List<Long> specialties
     ) {
         var localization = new Localization(latitude, longitude);
-        return _establishmentService.findEstablishmentsByLocalization(localization, distance);
+        return _establishmentService.findEstablishmentsByLocalization(localization, distance, specialties);
     }
 
     @GetMapping("/{id}")

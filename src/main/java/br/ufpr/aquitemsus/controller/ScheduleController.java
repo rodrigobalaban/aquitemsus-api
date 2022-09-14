@@ -2,11 +2,9 @@ package br.ufpr.aquitemsus.controller;
 
 import br.ufpr.aquitemsus.model.Schedule;
 import br.ufpr.aquitemsus.service.ScheduleService;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -51,6 +49,11 @@ public class ScheduleController {
     @GetMapping("/user")
     public List<Schedule> findUserSchedules(@RequestParam Long userId) {
         return _scheduleService.findUserSchedules(userId);
+    }
+
+    @GetMapping("/count-user")
+    public Long countUserSchedules(@RequestParam Long userId) {
+        return _scheduleService.countUserSchedules(userId);
     }
 
     @GetMapping(params = {"day", "month", "year", "idEstablishment"})

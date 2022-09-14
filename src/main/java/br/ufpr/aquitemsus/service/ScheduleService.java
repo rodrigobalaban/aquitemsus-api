@@ -43,6 +43,13 @@ public class ScheduleService {
         return this._scheduleRepository.findAllByUserSusIdOrderByDateDesc(userId);
     }
 
+    public Long countUserSchedules(Long userId) {
+        var confirmed = ScheduleStatus.Confirmed;
+        var reserved = ScheduleStatus.Reserved;
+
+        return this._scheduleRepository.countAllByUserSusIdAndStatusOrStatus(userId, confirmed, reserved);
+    }
+
     public List<Schedule> findSchedulesOfDay(Integer day, Integer month, Integer year, Long idEstablishment) {
         return this._scheduleRepository.findSchedulesOfDay(day, month, year, idEstablishment);
     }
