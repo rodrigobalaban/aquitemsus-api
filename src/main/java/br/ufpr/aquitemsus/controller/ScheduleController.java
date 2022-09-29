@@ -1,6 +1,7 @@
 package br.ufpr.aquitemsus.controller;
 
 import br.ufpr.aquitemsus.model.Schedule;
+import br.ufpr.aquitemsus.model.ScheduleReport;
 import br.ufpr.aquitemsus.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -91,5 +92,10 @@ public class ScheduleController {
     @DeleteMapping("/{id}")
     public void deleteSchedule(@PathVariable Long id) {
         _scheduleService.deleteSchedule(id);
+    }
+
+    @GetMapping("/report")
+    public ScheduleReport getScheduleEstablishmentReport(@RequestParam Long idEstablishment) {
+        return _scheduleService.getScheduleEstablishmentReport(idEstablishment);
     }
 }

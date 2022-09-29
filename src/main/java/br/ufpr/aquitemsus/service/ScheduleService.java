@@ -2,9 +2,10 @@ package br.ufpr.aquitemsus.service;
 
 import br.ufpr.aquitemsus.exception.NotFoundException;
 import br.ufpr.aquitemsus.model.Schedule;
+import br.ufpr.aquitemsus.model.ScheduleReport;
 import br.ufpr.aquitemsus.model.enums.ScheduleStatus;
+import br.ufpr.aquitemsus.model.interfaces.SchedulePerMonth;
 import br.ufpr.aquitemsus.repository.ScheduleRepository;
-import br.ufpr.aquitemsus.repository.UserAdminRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class ScheduleService {
 
     private final ScheduleRepository _scheduleRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, UserAdminRepository userAdminRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository) {
         _scheduleRepository = scheduleRepository;
     }
 
@@ -86,5 +87,33 @@ public class ScheduleService {
 
     public void deleteSchedule(Long id) {
         this._scheduleRepository.deleteById(id);
+    }
+
+    public ScheduleReport getScheduleEstablishmentReport(Long idEstablishment) {
+        ScheduleReport report = new ScheduleReport();
+
+        ScheduleStatus statusCanceled = ScheduleStatus.Canceled;
+        Long schedulesToday = _scheduleRepository.countSchedulesTodayWithoutCanceled(idEstablishment, statusCanceled);
+        report.setSchedulesToday(schedulesToday);
+
+        ScheduleStatus statusReserved = ScheduleStatus.Reserved;
+        Long schedulesReserved = _scheduleRepository.countAllByEstablishmentIdAndStatus(idEstablishment, statusReserved);
+        report.setSchedulesReserved(schedulesReserved);
+
+        ScheduleStatus statusComplete = ScheduleStatus.Complete;
+        Long schedulesComplete = _scheduleRepository.countAllByEstablishmentIdAndStatus(idEstablishment, statusComplete);
+        ScheduleStatus statusRated = ScheduleStatus.Rated;
+        Long schedulesRated = _scheduleRepository.countAllByEstablishmentIdAndStatus(idEstablishment, statusRated);
+        ScheduleStatus statusAbsent = ScheduleStatus.Absent;
+        Long schedulesAbsent = _scheduleRepository.countAllByEstablishmentIdAndStatus(idEstablishment, statusAbsent);
+
+        long totalSchedules = schedulesComplete + schedulesRated + schedulesAbsent;
+        Long attendancePercent = ((totalSchedules - schedulesAbsent) * 100) / totalSchedules;
+        report.setSchedulesAttendance(attendancePercent);
+
+        List<SchedulePerMonth> schedulePerMonthList = _scheduleRepository.countAllByEstablishmentPerMonth(idEstablishment);
+        report.setSchedulesPerMonth(schedulePerMonthList);
+
+        return report;
     }
 }
