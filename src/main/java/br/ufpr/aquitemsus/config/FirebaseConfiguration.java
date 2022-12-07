@@ -15,7 +15,7 @@ public class FirebaseConfiguration {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
         GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource("firebase-service-account.json").getInputStream());
+                .fromStream(new ClassPathResource("google-credentials.json").getInputStream());
 
         FirebaseOptions firebaseOptions = FirebaseOptions
                 .builder()
