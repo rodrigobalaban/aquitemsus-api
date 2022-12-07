@@ -2,12 +2,15 @@ package br.ufpr.aquitemsus.controller;
 
 import br.ufpr.aquitemsus.model.Establishment;
 import br.ufpr.aquitemsus.model.Localization;
+import br.ufpr.aquitemsus.model.interfaces.EstablishmentGridList;
+import br.ufpr.aquitemsus.model.interfaces.EstablishmentSearchMapList;
 import br.ufpr.aquitemsus.model.interfaces.EstablishmentSimplified;
 import br.ufpr.aquitemsus.service.EstablishmentService;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/establishments")
@@ -19,19 +22,70 @@ public class EstablishmentController {
         _establishmentService = establishmentService;
     }
 
-    @GetMapping
+    @GetMapping(params = {"search", "page", "pagesize"})
+    public List<EstablishmentGridList> findAllEstablishments(@RequestParam String search,
+                                                             @RequestParam int page,
+                                                             @RequestParam int pagesize,
+                                                             HttpServletResponse response) {
+
+        Page<EstablishmentGridList> pageEstablishments = this._establishmentService.findAllEstablishmentsByName(
+                search,
+                page,
+                pagesize
+        );
+
+        response.setHeader("X-Total-Count", String.valueOf(pageEstablishments.getTotalElements()));
+        return pageEstablishments.toList();
+    }
+
+    @GetMapping(params = {"search", "latitude", "longitude", "page", "pagesize"})
+    public List<EstablishmentSearchMapList> findAllEstablishments(@RequestParam String search,
+                                                             @RequestParam double latitude,
+                                                             @RequestParam double longitude,
+                                                             @RequestParam int page,
+                                                             @RequestParam int pagesize,
+                                                             HttpServletResponse response) {
+        var localization = new Localization(latitude, longitude);
+        Page<EstablishmentSearchMapList> pageEstablishments = this._establishmentService.findAllEstablishmentsByNameAndLocalization(
+                search,
+                localization,
+                page,
+                pagesize
+        );
+
+        response.setHeader("X-Total-Count", String.valueOf(pageEstablishments.getTotalElements()));
+        return pageEstablishments.toList();
+    }
+
+    @GetMapping("/localization")
     public List<EstablishmentSimplified> findEstablishmentsByLocalization(
             @RequestParam("latitude") double latitude,
             @RequestParam("longitude") double longitude,
-            @RequestParam("distance") double distance
+            @RequestParam("distance") double distance,
+            @RequestParam("specialties") List<Long> specialties
     ) {
         var localization = new Localization(latitude, longitude);
-
-        return _establishmentService.findEstablishmentsByLocalization(localization, distance);
+        return _establishmentService.findEstablishmentsByLocalization(localization, distance, specialties);
     }
 
     @GetMapping("/{id}")
-    public Optional<Establishment> findEstablishmentById(@PathVariable Long id) {
+    public Establishment findEstablishmentById(@PathVariable Long id) {
         return _establishmentService.findEstablishmentById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Establishment saveEstablishment(@RequestBody Establishment establishment) {
+        return _establishmentService.saveEstablishment(establishment);
+    }
+
+    @PutMapping("/{id}")
+    public Establishment updateEstablishment(@PathVariable Long id, @RequestBody Establishment establishment) {
+        return _establishmentService.updateEstablishment(id, establishment);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteEstablishment(@PathVariable Long id) {
+        _establishmentService.deleteEstablishment(id);
     }
 }
