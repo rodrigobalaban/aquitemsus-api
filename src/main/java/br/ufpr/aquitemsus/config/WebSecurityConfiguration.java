@@ -36,6 +36,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
                 .antMatchers(HttpMethod.GET, "/establishments/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/cloud-message/notify").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/register-user").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/reset-password").permitAll()
                 .anyRequest().authenticated()
